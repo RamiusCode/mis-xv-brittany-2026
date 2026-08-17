@@ -1,7 +1,7 @@
 ---
 // src/components/DireccionCeremonia.astro - Ceremonia (XV años, lila)
 const TITULO = "RECEPCIÓN";
-const HORA = "16:00 PM";
+const HORA = "19:00";
 const LUGAR = "SALÓN DE EVENTOS MARY";
 const UBICACION = "4to anillo del túnel el trompillo a la radial 13";
 const MAPA = "https://maps.app.goo.gl/sujtecfy1FdNFr1DA";
@@ -52,7 +52,7 @@ const MAPA = "https://maps.app.goo.gl/sujtecfy1FdNFr1DA";
     <h3 class="cer-item cer-titulo">{TITULO}</h3>
 
     <!-- Hora -->
-    <p class="cer-item cer-hora">HORA: {HORA}</p>
+    <p class="cer-item cer-hora">DESDE LAS {HORA} HORAS</p>
 
     <!-- Icono de ubicación -->
     <svg
@@ -112,7 +112,8 @@ const MAPA = "https://maps.app.goo.gl/sujtecfy1FdNFr1DA";
   /* Hora */
   .cer-hora {
     font-family: "Crimson Text", serif;
-    color: #8a63b0;
+    font-weight: 700;
+    color: #7b4fa8;
     font-size: clamp(1.05rem, 4.6vw, 1.25rem);
     letter-spacing: 0.08em;
     line-height: 1.2;
