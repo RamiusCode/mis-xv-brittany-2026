@@ -1,0 +1,102 @@
+---
+// src/components/Restriccion.astro - Solo jóvenes y adultos (XV años, lila)
+---
+
+<section
+  class="relative w-full flex justify-center overflow-hidden"
+  id="res-wrapper"
+  style="padding-top: 1.5rem; padding-bottom: 2.5rem;"
+>
+  <div
+    class="relative z-10 w-full max-w-[430px] text-center flex flex-col items-center"
+    style="padding-left: 2rem; padding-right: 2rem;"
+  >
+    <!-- Icono (coloreado en lila con mask) -->
+    <div
+      class="res-item res-icono"
+      role="img"
+      aria-label="Evento solo para jóvenes y adultos"
+      style="-webkit-mask: url('/iconos/restriccion.png') center / contain no-repeat; mask: url('/iconos/restriccion.png') center / contain no-repeat;"
+    >
+    </div>
+
+    <!-- Título -->
+    <h3 class="res-item res-titulo">NO NIÑOS</h3>
+
+    <!-- Texto -->
+    <p class="res-item res-texto">
+      Amamos a los niños, pero queremos que disfrutes del evento tanto como
+      nosotros, por ese motivo hemos reservado los lugares solo para jóvenes y
+      adultos.
+    </p>
+
+    <p class="res-item res-texto res-cierre">¡Niños, buenas noches!</p>
+  </div>
+</section>
+
+<style>
+  .res-icono {
+    width: clamp(38px, 11vw, 50px);
+    height: clamp(38px, 11vw, 50px);
+    background-color: #8a63b0;
+    margin-bottom: 1.1rem;
+  }
+
+  /* Título de sección: mismo tamaño y estilo que en los demás componentes */
+  .res-titulo {
+    font-family: "Crimson Text", serif;
+    font-weight: 400;
+    color: #7b4fa8;
+    font-size: clamp(1.4rem, 6.2vw, 1.8rem);
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    line-height: 1.1;
+    margin: 0;
+    margin-bottom: 1.3rem;
+  }
+
+  .res-texto {
+    font-family: "Crimson Text", serif;
+    color: #7f5aa8;
+    font-size: clamp(1.25rem, 5.4vw, 1.5rem);
+    line-height: 1.45;
+    margin: 0;
+    max-width: 330px;
+  }
+
+  .res-cierre {
+    margin-top: 0.9rem;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initRestriccion = () => {
+    const items = gsap.utils.toArray(".res-item");
+    if (!items.length) return;
+
+    gsap.set(items, { opacity: 0, y: 30 });
+
+    ScrollTrigger.create({
+      trigger: "#res-wrapper",
+      start: "top 80%",
+      once: true,
+      onEnter: () => {
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power2.out",
+        });
+      },
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initRestriccion);
+  document.addEventListener("astro:page-load", initRestriccion);
+</script>

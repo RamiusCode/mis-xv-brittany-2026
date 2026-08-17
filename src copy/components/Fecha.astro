@@ -1,0 +1,181 @@
+---
+// src/components/Fecha.astro - Fecha del evento (XV años, lila + dorado)
+const DIA_SEMANA = "SÁBADO";
+const DIA = "05";
+const MES = "SEPTIEMBRE";
+const ANIO = "2026";
+---
+
+<section
+  class="relative w-full flex justify-center overflow-hidden"
+  id="fecha-wrapper"
+  style="padding-top: 1rem; padding-bottom: 2rem;"
+>
+  <div
+    class="relative z-10 w-full max-w-[480px] text-center flex flex-col items-center"
+    style="padding-left: 1rem; padding-right: 1rem;"
+  >
+    <!-- Separador floral superior -->
+    <img
+      src="/imagenes/separador.png"
+      alt=""
+      id="fecha-separador"
+      class="w-full h-auto pointer-events-none select-none"
+      style="max-width: 180px;"
+    />
+
+    <!-- Invitación -->
+    <p class="fecha-item fecha-invita">Tengo el agrado de invitarte a</p>
+    <p class="fecha-item fecha-quince">mis 15 años</p>
+
+    <!-- Año arriba -->
+    <p class="fecha-item fecha-anio">{ANIO}</p>
+
+    <!-- Día de la semana | número | mes, con líneas arriba y abajo -->
+    <div class="fecha-item fecha-fila">
+      <div class="fecha-col">
+        <span class="fecha-linea"></span>
+        <span class="fecha-palabra">{DIA_SEMANA}</span>
+        <span class="fecha-linea"></span>
+      </div>
+
+      <span class="fecha-num">{DIA}</span>
+
+      <div class="fecha-col">
+        <span class="fecha-linea"></span>
+        <span class="fecha-palabra">{MES}</span>
+        <span class="fecha-linea"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Invitación: Capetown Signature, lila sólido */
+  .fecha-invita,
+  .fecha-quince {
+    font-family: "Capetown Signature", cursive;
+    color: #7b4fa8;
+    line-height: 1.05;
+    margin: 0;
+    max-width: 360px;
+  }
+
+  .fecha-invita {
+    font-size: clamp(2.5rem, 11vw, 3.2rem);
+    margin-top: 2.25rem;
+  }
+
+  .fecha-quince {
+    font-size: clamp(2.8rem, 12vw, 3.5rem);
+    margin-top: 0.1rem;
+  }
+
+  /* Año arriba */
+  .fecha-anio {
+    font-family: "Crimson Text", serif;
+    color: #7b4fa8;
+    font-size: clamp(1.5rem, 6.4vw, 1.9rem);
+    letter-spacing: 0.12em;
+    text-indent: 0.12em;
+    line-height: 1;
+    margin: 0;
+    margin-top: 1.6rem;
+  }
+
+  /* Fila: día | número | mes */
+  .fecha-fila {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.4rem, 1.6vw, 1rem);
+    width: 100%;
+    max-width: 400px;
+    margin-top: 1.1rem;
+  }
+
+  /* Columna con línea arriba y abajo: reparte el ancho disponible */
+  .fecha-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 0;
+  }
+
+  .fecha-linea {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: rgba(123, 79, 168, 0.55);
+  }
+
+  /* SÁBADO y SEPTIEMBRE */
+  .fecha-palabra {
+    font-family: "Crimson Text", serif;
+    color: #8a63b0;
+    font-size: clamp(1.1rem, 4.8vw, 1.35rem);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    white-space: nowrap;
+    margin: 0.5rem 0;
+  }
+
+  /* Número del día */
+  .fecha-num {
+    font-family: "Crimson Text", serif;
+    color: #7b4fa8;
+    font-size: clamp(4rem, 19vw, 5.5rem);
+    line-height: 0.9;
+    min-width: clamp(52px, 16vw, 80px);
+    text-align: center;
+    /* Sin degradado a propósito: aquí el recorte del fondo cortaría el número. */
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initFecha = () => {
+    const items = gsap.utils.toArray(".fecha-item");
+    if (!items.length) return;
+
+    // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+    // la animación de entrada se repita en cada scroll.
+    const reset = () => {
+      gsap.killTweensOf([...items, "#fecha-separador"]);
+      gsap.set(items, { opacity: 0, y: 30 });
+      gsap.set("#fecha-separador", { opacity: 0, y: -25, scale: 0.94 });
+    };
+
+    reset();
+
+    ScrollTrigger.create({
+      trigger: "#fecha-wrapper",
+      start: "top 82%",
+      onLeaveBack: reset,
+      onEnter: () => {
+        gsap.to("#fecha-separador", {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.4,
+          ease: "power2.out",
+        });
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.15,
+          delay: 0.2,
+          ease: "power2.out",
+        });
+      },
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initFecha);
+  document.addEventListener("astro:page-load", initFecha);
+</script>

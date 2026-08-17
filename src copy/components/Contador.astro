@@ -1,0 +1,192 @@
+---
+// src/components/Contador.astro - Cuenta regresiva (sábado 5 de septiembre 2026)
+---
+
+<section
+  class="relative w-full flex justify-center"
+  id="cont-wrapper"
+  style="padding-top: 0.25rem; padding-bottom: 2rem;"
+>
+  <div
+    class="relative z-10 w-full max-w-[430px] text-center flex flex-col items-center"
+    style="padding-left: 1rem; padding-right: 1rem;"
+    id="cuenta-regresiva"
+  >
+    <!-- Faltan -->
+    <p class="cont-titulo">Faltan</p>
+
+    <!-- Números -->
+    <div class="cont-fila">
+      <!-- Días -->
+      <div class="cont-bloque">
+        <span id="dias" class="cont-num">0</span>
+        <span class="cont-label">Días</span>
+      </div>
+
+      <span class="cont-sep">:</span>
+
+      <!-- Horas -->
+      <div class="cont-bloque">
+        <span id="horas" class="cont-num">00</span>
+        <span class="cont-label">Horas</span>
+      </div>
+
+      <span class="cont-sep">:</span>
+
+      <!-- Minutos -->
+      <div class="cont-bloque">
+        <span id="minutos" class="cont-num">00</span>
+        <span class="cont-label">Minutos</span>
+      </div>
+
+      <span class="cont-sep">:</span>
+
+      <!-- Segundos -->
+      <div class="cont-bloque">
+        <span id="segundos" class="cont-num">00</span>
+        <span class="cont-label">Segundos</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Título con la fuente de firma */
+  .cont-titulo {
+    font-family: "Capetown Signature", cursive;
+    color: #7b4fa8;
+    font-size: clamp(2.5rem, 11vw, 3.2rem);
+    line-height: 1.05;
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+
+  .cont-fila {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(0.35rem, 1.6vw, 0.6rem);
+  }
+
+  .cont-bloque {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Números */
+  .cont-num {
+    font-family: "Crimson Text", serif;
+    color: #7b4fa8;
+    font-size: clamp(2.4rem, 11vw, 3rem);
+    line-height: 1;
+  }
+
+  /* Los dos puntos entre bloques */
+  .cont-sep {
+    font-family: "Crimson Text", serif;
+    color: #a98cc9;
+    font-size: clamp(2.4rem, 11vw, 3rem);
+    line-height: 1;
+  }
+
+  /* Etiquetas (DÍAS, HORAS...) */
+  .cont-label {
+    font-family: "Crimson Text", serif;
+    color: #8a63b0;
+    font-size: clamp(0.7rem, 3vw, 0.85rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: 0.5rem;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ═══ FECHA DEL EVENTO: sábado 5 de septiembre de 2026 ═══
+  const FECHA_EVENTO = {
+    año: 2026,
+    mes: 9,
+    dia: 5,
+    hora: 16,
+    minuto: 0,
+  };
+
+  const initContador = () => {
+    // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+    // la animación de entrada se repita en cada scroll.
+    const reset = () => {
+      gsap.killTweensOf("#cuenta-regresiva");
+      gsap.set("#cuenta-regresiva", { opacity: 0, y: 30 });
+    };
+
+    reset();
+
+    ScrollTrigger.create({
+      trigger: "#cont-wrapper",
+      start: "top 85%",
+      onLeaveBack: reset,
+      onEnter: () => {
+        gsap.to("#cuenta-regresiva", {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power2.out",
+        });
+      },
+    });
+
+    const fechaBoda = new Date(
+      FECHA_EVENTO.año,
+      FECHA_EVENTO.mes - 1,
+      FECHA_EVENTO.dia,
+      FECHA_EVENTO.hora,
+      FECHA_EVENTO.minuto,
+      0,
+    ).getTime();
+
+    function actualizar() {
+      const diferencia = fechaBoda - new Date().getTime();
+
+      const diasEl = document.getElementById("dias");
+      const horasEl = document.getElementById("horas");
+      const minutosEl = document.getElementById("minutos");
+      const segundosEl = document.getElementById("segundos");
+
+      if (diferencia > 0) {
+        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor(
+          (diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+        const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+        if (diasEl) diasEl.textContent = dias.toString();
+        if (horasEl) horasEl.textContent = horas.toString().padStart(2, "0");
+        if (minutosEl) minutosEl.textContent = minutos.toString().padStart(2, "0");
+        if (segundosEl)
+          segundosEl.textContent = segundos.toString().padStart(2, "0");
+      } else {
+        if (diasEl) diasEl.textContent = "0";
+        if (horasEl) horasEl.textContent = "00";
+        if (minutosEl) minutosEl.textContent = "00";
+        if (segundosEl) segundosEl.textContent = "00";
+      }
+    }
+
+    actualizar();
+    setInterval(actualizar, 1000);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initContador);
+  } else {
+    initContador();
+  }
+  document.addEventListener("astro:page-load", initContador);
+</script>

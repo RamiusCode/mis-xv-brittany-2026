@@ -1,0 +1,187 @@
+---
+// src/components/Confirmar.astro - Confirmar asistencia por WhatsApp (XV años, lila)
+const NOMBRE = "Brittany";
+const FECHA_EVENTO = "sábado 5 de septiembre";
+
+// WhatsApp con mensaje predeterminado
+const TELEFONO = "59175664006"; // +591 75664006
+const MENSAJE = `Me complace confirmar mi asistencia para los 15 años de ${NOMBRE}. Nos vemos el ${FECHA_EVENTO}, estaré sin falta`;
+const WHATSAPP = `https://wa.me/${TELEFONO}?text=${encodeURIComponent(MENSAJE)}`;
+---
+
+<section
+    class="relative w-full flex justify-center overflow-hidden"
+    id="conf-wrapper"
+    style="padding-top: 1.5rem; padding-bottom: 3rem;"
+>
+    <!-- Flor lateral izquierda -->
+    <div
+        id="conf-flor-izq"
+        class="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none z-[3]"
+        style="width: 15%; max-width: 75px;"
+    >
+        <img src="/imagenes/lateral.png" alt="" class="w-full h-auto" />
+    </div>
+
+    <!-- Flor lateral derecha (la misma, espejada) -->
+    <div
+        id="conf-flor-der"
+        class="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none select-none z-[3]"
+        style="width: 15%; max-width: 75px;"
+    >
+        <img
+            src="/imagenes/lateral.png"
+            alt=""
+            class="w-full h-auto"
+            style="transform: scaleX(-1);"
+        />
+    </div>
+
+    <div
+        class="relative z-10 w-full max-w-[430px] text-center flex flex-col items-center"
+        style="padding-left: 3rem; padding-right: 3rem;"
+    >
+        <!-- Título -->
+        <h3 class="conf-item conf-titulo">CONFIRMAR ASISTENCIA</h3>
+
+        <!-- Icono (mano presionando el celular, coloreado en lila con mask) -->
+        <div class="conf-item conf-icono-caja">
+            <div
+                class="conf-icono"
+                role="img"
+                aria-label="Confirmar asistencia"
+                style="-webkit-mask: url('/imagenes/confirmar.png') center / contain no-repeat; mask: url('/imagenes/confirmar.png') center / contain no-repeat;"
+            >
+            </div>
+        </div>
+
+        <!-- Texto -->
+        <p class="conf-item conf-texto">
+            Compartir con las personas que queremos es lo importante, por este
+            motivo por favor confirma tu asistencia.
+        </p>
+
+        <!-- Botón de WhatsApp -->
+        <a
+            href={WHATSAPP}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="conf-item conf-boton"
+        >
+            CONFIRMAR ASISTENCIA
+        </a>
+    </div>
+</section>
+
+<style>
+    /* Título de sección: mismo tamaño y estilo que en los demás componentes */
+    .conf-titulo {
+        font-family: "Crimson Text", serif;
+        font-weight: 400;
+        color: #7b4fa8;
+        font-size: clamp(1.4rem, 6.2vw, 1.8rem);
+        letter-spacing: 0.22em;
+        text-indent: 0.22em;
+        line-height: 1.35;
+        margin: 0;
+    }
+
+    /* Caja del icono */
+    .conf-icono-caja {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(46px, 13vw, 58px);
+        height: clamp(46px, 13vw, 58px);
+        border: 1px solid rgba(123, 79, 168, 0.45);
+        border-radius: 10px;
+        margin-top: 1.5rem;
+    }
+
+    .conf-icono {
+        width: 62%;
+        height: 62%;
+        background-color: #8a63b0;
+    }
+
+    /* Texto */
+    .conf-texto {
+        font-family: "Crimson Text", serif;
+        color: #7f5aa8;
+        font-size: clamp(1.25rem, 5.4vw, 1.5rem);
+        line-height: 1.45;
+        margin: 0;
+        margin-top: 1.5rem;
+        max-width: 330px;
+    }
+
+    /* Botón */
+    .conf-boton {
+        display: inline-block;
+        font-family: "Crimson Text", serif;
+        font-size: clamp(0.9rem, 3.6vw, 1.05rem);
+        letter-spacing: 0.1em;
+        /* Todo el texto del botón en una sola línea */
+        white-space: nowrap;
+        color: #ffffff;
+        background: #9b78c4;
+        border-radius: 6px;
+        padding: 0.75rem 1.3rem;
+        margin-top: 1.8rem;
+        box-shadow: 0 6px 14px rgba(110, 75, 150, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .conf-boton:hover {
+        background: #7b4fa8;
+        box-shadow: 0 10px 20px rgba(110, 75, 150, 0.35);
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const initConfirmar = () => {
+        const items = gsap.utils.toArray(".conf-item");
+        if (!items.length) return;
+
+        // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+        // la animación de entrada se repita en cada scroll.
+        const reset = () => {
+            gsap.killTweensOf([...items, "#conf-flor-izq", "#conf-flor-der"]);
+            gsap.set(items, { opacity: 0, y: 30 });
+            gsap.set("#conf-flor-izq", { opacity: 0, x: -40 });
+            gsap.set("#conf-flor-der", { opacity: 0, x: 40 });
+        };
+
+        reset();
+
+        ScrollTrigger.create({
+            trigger: "#conf-wrapper",
+            start: "top 80%",
+            onLeaveBack: reset,
+            onEnter: () => {
+                gsap.to(items, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    stagger: 0.15,
+                    ease: "power2.out",
+                });
+                gsap.to(["#conf-flor-izq", "#conf-flor-der"], {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1.4,
+                    ease: "power2.out",
+                });
+            },
+        });
+    };
+
+    document.addEventListener("DOMContentLoaded", initConfirmar);
+    document.addEventListener("astro:page-load", initConfirmar);
+</script>

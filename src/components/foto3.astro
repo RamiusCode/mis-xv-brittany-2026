@@ -1,0 +1,148 @@
+---
+// src/components/foto3.astro - Fotos papel rasgado (solo arriba y abajo)
+// Las fotos van rotando en bucle con un fundido entre una y otra.
+const fotos = [
+  "/imagenes/foto5.webp",
+  "/imagenes/foto6.webp",
+  "/imagenes/foto7.webp",
+];
+const SEG_POR_FOTO = 4; // segundos que se ve cada foto
+const CICLO = fotos.length * SEG_POR_FOTO; // duración total del bucle
+---
+
+<section
+  class="relative w-full flex justify-center"
+  id="foto3-wrapper"
+  style="padding-top: 0.25rem; padding-bottom: 1rem;"
+>
+  <div class="foto3-item w-full max-w-[500px]">
+    <svg
+      viewBox="0 0 400 600"
+      class="foto3-svg w-full h-auto"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <!-- Rasgado grande e irregular (solo afecta arriba/abajo visible) -->
+        <filter id="rasgado-foto3" x="-30%" y="-40%" width="160%" height="180%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.012"
+            numOctaves="4"
+            seed="11"
+            result="n"
+          ></feTurbulence>
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="65"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          ></feDisplacementMap>
+        </filter>
+
+        <!-- Máscara: rect ancho (lados rectos) con arriba/abajo rasgados -->
+        <mask id="mascara-rasgada3">
+          <rect
+            x="-80"
+            y="45"
+            width="560"
+            height="510"
+            fill="white"
+            filter="url(#rasgado-foto3)"></rect>
+        </mask>
+      </defs>
+
+      <!-- Fotos de borde a borde, rasgadas arriba y abajo.
+           Se apilan y se van alternando con el fundido del CSS. -->
+      {
+        fotos.map((src, i) => (
+          <image
+            class="foto3-slide"
+            href={src}
+            x="0"
+            y="0"
+            width="400"
+            height="600"
+            preserveAspectRatio="xMidYMid slice"
+            mask="url(#mascara-rasgada3)"
+            style={`animation-duration: ${CICLO}s; animation-delay: ${i * SEG_POR_FOTO}s;`}
+          />
+        ))
+      }
+    </svg>
+  </div>
+</section>
+
+<style>
+  .foto3-svg {
+    overflow: visible;
+    display: block;
+  }
+
+  /* Rotación de fotos: cada una aparece, se mantiene y se funde con la
+     siguiente. El desfase lo pone el animation-delay de cada <image>.
+     Con 3 fotos y 4s cada una, el ciclo completo dura 12s. */
+  .foto3-slide {
+    opacity: 0;
+    will-change: opacity;
+    animation-name: foto3-ciclo;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes foto3-ciclo {
+    0% {
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    28% {
+      opacity: 1;
+    }
+    33.34% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initFoto3 = () => {
+    const item = document.querySelector(".foto3-item");
+    if (!item) return;
+
+    // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+    // la animación de entrada se repita en cada scroll.
+    const reset = () => {
+      gsap.killTweensOf(".foto3-item");
+      gsap.set(".foto3-item", { opacity: 0, y: 30 });
+    };
+
+    reset();
+
+    ScrollTrigger.create({
+      trigger: "#foto3-wrapper",
+      start: "top 82%",
+      onEnter: () => {
+        gsap.to(".foto3-item", {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: "power2.out",
+        });
+      },
+      onLeaveBack: reset,
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initFoto3);
+  document.addEventListener("astro:page-load", initFoto3);
+</script>

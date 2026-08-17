@@ -1,0 +1,151 @@
+---
+// Itinerario.astro - Línea de tiempo en verde oscuro y verde claro
+const eventos = [
+  { hora: "16:00 p.m.", texto: "Ceremonia religiosa",   icono: "iglesia.png" },
+  { hora: "19:00 p.m.", texto: "Recepción social",      icono: "recepcion.png" },
+  { hora: "19:30 p.m.", texto: "Ingreso de los novios", icono: "entrada.png" },
+  { hora: "20:00 p.m.", texto: "Vals especial",         icono: "musica.png" },
+  { hora: "21:00 p.m.", texto: "Cena",                  icono: "cena.png" },
+  { hora: "21:30 p.m.", texto: "Felicitaciones y foto con los novios", icono: "foto.png" },
+  { hora: "22:30 p.m.", texto: "Torta",                 icono: "torta.png" },
+  { hora: "23:30 p.m.", texto: "Despedida de los novios", icono: "despedida.png" },
+];
+---
+
+<section class="relative w-full overflow-x-clip pt-24 pb-24" id="itin-wrapper" style="margin-top: 5rem; margin-bottom: 4rem;">
+  <!-- Flor superior derecha (flor1) -->
+  <img
+    src="/imagenes/flor1.png"
+    alt=""
+    id="flor-itin-top"
+    class="absolute -top-12 -right-8 w-24 sm:w-28 pointer-events-none select-none z-20 opacity-90"
+  />
+
+  <!-- Flor inferior izquierda (flor2) -->
+  <div
+    id="flor-itin-bottom"
+    class="absolute -bottom-2 -left-14 w-24 sm:w-28 pointer-events-none select-none z-20 opacity-90"
+  >
+    <img src="/imagenes/flor2.png" alt="" class="w-full h-auto" />
+  </div>
+
+  <div class="relative z-10 w-full max-w-[480px] mx-auto px-5">
+    <!-- Título -->
+    <div class="text-center titulo-itin" style="margin-bottom: 1.5rem;">
+      <h2 class="itin-titulo">ITINERARIO</h2>
+      <div class="flex items-center justify-center gap-2 mt-3">
+        <span class="w-12 h-[1.5px] bg-gradient-to-r from-transparent to-[#C4945C]"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-[#C4945C]"></span>
+        <span class="w-12 h-[1.5px] bg-gradient-to-l from-transparent to-[#C4945C]"></span>
+      </div>
+    </div>
+
+    <!-- Línea de tiempo -->
+    <div class="relative max-w-[320px] mx-auto -translate-x-3">
+      <!-- Línea vertical central -->
+      <div
+        class="absolute top-3 bottom-3 left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-[#3A4A35] via-[#7D9068] to-[#3A4A35] rounded-full itin-line origin-top"
+      >
+      </div>
+
+      {eventos.map((ev) => (
+        <div class="grid grid-cols-[1fr_36px_1fr] items-center gap-1 py-4 itin-row">
+          <!-- Icono -->
+          <div class="flex justify-end pr-2 min-w-0 itin-icon">
+            <div class="w-16 h-16 md:w-[4.5rem] md:h-[4.5rem] rounded-full border border-[#3A4A35]/35 flex items-center justify-center shadow-sm">
+              <div
+                class="w-10 h-10 md:w-11 md:h-11"
+                style={`background-color:#3A4A35; -webkit-mask:url('/iconos/${ev.icono}') center / contain no-repeat; mask:url('/iconos/${ev.icono}') center / contain no-repeat;`}
+              >
+              </div>
+            </div>
+          </div>
+
+          <!-- Corazón sobre la línea -->
+          <div class="flex justify-center relative z-10 itin-heart">
+            <svg class="w-5 h-5 text-[#3A4A35] drop-shadow-sm" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </div>
+
+          <!-- Texto -->
+          <div class="text-left pl-2 min-w-0 itin-text">
+            <p class="font-wiretype text-[#3A4A35] text-xl md:text-2xl leading-tight">
+              {ev.hora}
+            </p>
+            <p class="font-wiretype text-[#7D9068] text-base md:text-lg uppercase tracking-[0.03em] leading-tight mt-1">
+              {ev.texto}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Título de sección: mismo tamaño y estilo que en los demás componentes */
+  .itin-titulo {
+    font-family: "Crimson Text", serif;
+    font-weight: 400;
+    color: #7b4fa8;
+    font-size: clamp(1.4rem, 6.2vw, 1.8rem);
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    line-height: 1.1;
+    margin: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initItinerario = () => {
+    const rows = gsap.utils.toArray<HTMLElement>(".itin-row");
+    if (!rows.length) return;
+
+    // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+    // la animación de entrada se repita en cada scroll.
+    const reset = () => {
+      gsap.killTweensOf([
+        ".titulo-itin",
+        ".itin-line",
+        ".itin-icon",
+        ".itin-heart",
+        ".itin-text",
+        "#flor-itin-top",
+        "#flor-itin-bottom",
+      ]);
+      gsap.set(".titulo-itin", { opacity: 0, y: -30 });
+      gsap.set(".itin-line", { opacity: 0, scaleY: 0 });
+      gsap.set(".itin-icon", { opacity: 0, x: -50 });
+      gsap.set(".itin-heart", { opacity: 0, scale: 0 });
+      gsap.set(".itin-text", { opacity: 0, x: 50 });
+      gsap.set("#flor-itin-top", { opacity: 0, x: 40, y: -20 });
+      gsap.set("#flor-itin-bottom", { opacity: 0, x: -40, y: 20 });
+    };
+
+    reset();
+
+    ScrollTrigger.create({
+      trigger: "#itin-wrapper",
+      start: "top 80%",
+      onLeaveBack: reset,
+      onEnter: () => {
+        gsap.to(".titulo-itin", { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+        gsap.to("#flor-itin-top", { opacity: 0.9, x: 0, y: 0, duration: 1.4, ease: "power2.out" });
+        gsap.to("#flor-itin-bottom", { opacity: 0.9, x: 0, y: 0, duration: 1.4, ease: "power2.out" });
+        gsap.to(".itin-line", { opacity: 1, scaleY: 1, duration: 1.4, ease: "power2.out" });
+        gsap.to(".itin-icon", { opacity: 1, x: 0, duration: 0.9, stagger: 0.12, ease: "power3.out" });
+        gsap.to(".itin-heart", { opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: "back.out(1.7)" });
+        gsap.to(".itin-text", { opacity: 1, x: 0, duration: 0.9, stagger: 0.12, ease: "power3.out" });
+      },
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initItinerario);
+  document.addEventListener("astro:page-load", initItinerario);
+</script>

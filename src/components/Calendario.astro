@@ -1,0 +1,162 @@
+---
+// src/components/Calendario.astro - Nuestra fecha especial (Septiembre 2026)
+const year = 2026;
+const month = 9; // Septiembre (1-indexed)
+const monthName = "Septiembre";
+const highlightDay = 5;
+
+// Primer día del mes con la semana empezando en Lunes
+const firstWeekday = new Date(year, month - 1, 1).getDay(); // 0=Dom..6=Sáb
+const startOffset = (firstWeekday + 6) % 7; // Lun=0 .. Dom=6
+const daysInMonth = new Date(year, month, 0).getDate();
+
+const cells: (number | null)[] = [];
+for (let i = 0; i < startOffset; i++) cells.push(null);
+for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+const diasSemana = ["L", "M", "M", "J", "V", "S", "D"];
+---
+
+<section
+  class="relative w-full flex justify-center overflow-hidden"
+  id="cal-wrapper"
+  style="padding-top: 0.5rem; padding-bottom: 0.5rem;"
+>
+  <div
+    class="relative z-10 w-full max-w-[300px] text-center flex flex-col items-center"
+    style="padding-left: 0.25rem; padding-right: 0.25rem;"
+  >
+    <!-- Separador floral sobre el título -->
+    <img
+      src="/imagenes/separador.png"
+      alt=""
+      class="cal-item w-full max-w-[200px] h-auto pointer-events-none select-none"
+      style="margin-bottom: 0.5rem;"
+    />
+
+    <!-- Título -->
+    <p
+      class="cal-item titulo-seccion font-wiretype text-[#3A4A35] tracking-[0.12em] uppercase text-lg font-bold"
+    >
+      Nuestra Fecha Especial
+    </p>
+
+    <!-- Mes y Año -->
+    <div class="cal-item w-full flex items-end justify-between px-1" style="margin-top: 1.25rem; margin-bottom: 1.75rem;">
+      <span class="font-mention italic text-[#3A4A35] text-3xl md:text-4xl leading-none">
+        {monthName}
+      </span>
+      <span class="font-wiretype text-[#3A4A35] text-2xl md:text-3xl leading-none">
+        {year}
+      </span>
+    </div>
+
+    <!-- Calendario -->
+    <div class="cal-item w-full">
+      <!-- Cabecera días de la semana -->
+      <div class="grid grid-cols-7">
+        {
+          diasSemana.map((d) => (
+            <div class="font-mention italic text-[#3A4A35] text-lg md:text-xl py-1">
+              {d}
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Días -->
+      <div class="grid grid-cols-7">
+        {
+          cells.map((day) => (
+            <div class="relative flex items-center justify-center h-9 md:h-10">
+              {day && (
+                <span
+                  class={
+                    day === highlightDay
+                      ? "relative z-10 font-mention italic text-[#3A4A35] text-xl md:text-2xl font-bold"
+                      : "font-mention italic text-[#3A4A35] text-lg md:text-xl"
+                  }
+                >
+                  {day}
+                </span>
+              )}
+              {day === highlightDay && (
+                <div
+                  class="absolute w-10 h-10 md:w-12 md:h-12 corazon-latido pointer-events-none"
+                  style="background-color:#3A4A35; -webkit-mask:url('/imagenes/corazon.png') center / contain no-repeat; mask:url('/imagenes/corazon.png') center / contain no-repeat;"
+                />
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* La fuente WireType solo trae un peso, así que font-bold no la engrosa más.
+     Engrosamos el trazo para que el título se note en negrita. */
+  .titulo-seccion {
+    -webkit-text-stroke: 0.6px currentColor;
+    paint-order: stroke fill;
+  }
+
+  /* Mismo zoom continuo que el texto "¡NOS CASAMOS!" de NombresFlores.
+     La rotación y el desplazamiento van dentro del keyframe porque la
+     animación reemplaza por completo la propiedad transform. */
+  .corazon-latido {
+    transform-origin: center;
+    will-change: transform;
+    animation: corazon-zoom 1.6s ease-in-out infinite;
+  }
+
+  @keyframes corazon-zoom {
+    0%,
+    100% {
+      transform: translateY(4px) rotate(-6deg) scale(1);
+    }
+    50% {
+      transform: translateY(4px) rotate(-6deg) scale(1.06);
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initCalendario = () => {
+    const items = gsap.utils.toArray(".cal-item");
+    if (!items.length) return;
+
+    // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+    // la animación de entrada se repita en cada scroll.
+    const reset = () => {
+      gsap.killTweensOf(items);
+      gsap.set(items, { opacity: 0, y: 30 });
+    };
+
+    reset();
+
+    ScrollTrigger.create({
+      trigger: "#cal-wrapper",
+      start: "top 80%",
+      onEnter: () => {
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: "power2.out",
+        });
+      },
+      onLeaveBack: reset,
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initCalendario);
+  document.addEventListener("astro:page-load", initCalendario);
+</script>

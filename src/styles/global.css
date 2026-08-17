@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   PALETA DE LA INVITACIÓN — 100% VERDE (sin dorado)
+   Combina con el sobre verde olivo y las flores.
+   ───────────────────────────────────────────── */
+:root {
+  --verde-oscuro: #3a4a35;  /* títulos, nombres, iconos, horas, bordes, botones */
+  --verde-hover: #2c3a28;   /* estado hover del verde oscuro */
+  --verde-claro: #7d9068;   /* textos secundarios, direcciones, etiquetas */
+  --verde-suave: #a9bc96;   /* detalles y líneas muy sutiles */
+  --crema: #edf0e6;         /* texto sobre fondo verde oscuro */
+  --fondo: #faf7f0;         /* fondo base (papel) */
+}
+
+
+/* Fuente personalizada Tangerine */
+@font-face {
+  font-family: 'Tangerine Bold';
+  src: url('/fonts/Tangerine_Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+.font-tangerine {
+  font-family: 'Tangerine Bold', cursive !important;
+}
+
+/* Fuente personalizada Mention */
+@font-face {
+  font-family: 'Mention Regular';
+  src: url('/fonts/Mention Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-mention {
+  font-family: 'Mention Regular', sans-serif !important;
+}
+
+/* Fuente personalizada WireType Mono */
+@font-face {
+  font-family: 'WireType Mono Bold';
+  src: url('/fonts/WireTypeMono-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+.font-wiretype {
+  font-family: 'WireType Mono Bold', monospace !important;
+}
+
+/* Fuente personalizada High Billion */
+@font-face {
+  font-family: 'High Billion 2';
+  src: url('/fonts/High Billion 2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-highbillion {
+  font-family: 'High Billion 2', sans-serif !important;
+}
+
+/* Fuente personalizada Miracle History */
+@font-face {
+  font-family: 'Miracle History';
+  src: url('/fonts/Miracle History.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-miracle {
+  font-family: 'Miracle History', cursive !important;
+}
+
+/* Fuente personalizada Capetown Signature Slant */
+@font-face {
+  font-family: 'Capetown Signature Slant';
+  src: url('/fonts/Capetown Signature Slant OTF.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-capetown {
+  font-family: 'Capetown Signature Slant', cursive !important;
+}
+
+/* Fuente personalizada Capetown Signature (versión recta) */
+@font-face {
+  font-family: 'Capetown Signature';
+  src: url('/fonts/capetownsignature-l3r8y.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-capetown-signature {
+  font-family: 'Capetown Signature', cursive !important;
+}
+
+/* Para el nombre */
+.font-great-vibes {
+  font-family: 'Great Vibes', cursive !important;
+}
+
+/* Para mis XV años */
+.font-crimson {
+  font-family: 'Crimson Text', serif !important;
+}
+
+/* Para dedicatoria*/
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif !important;
+}
+
+/*Para texto con Charm */
+.font-charm {
+  font-family: 'Charm', cursive !important;
+}

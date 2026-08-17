@@ -1,0 +1,258 @@
+---
+// src/components/CodigoVestimenta.astro - Dress code (XV años, lila)
+const TITULO = "DRESS CODE";
+const TIPO = "FORMAL";
+---
+
+<section
+  class="relative w-full flex justify-center overflow-hidden"
+  id="cv-wrapper"
+  style="padding-top: 0.5rem; padding-bottom: 3rem;"
+>
+  <!-- Flor lateral izquierda -->
+  <div
+    id="cv-flor-izq"
+    class="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none z-[3]"
+    style="width: 15%; max-width: 75px;"
+  >
+    <img src="/imagenes/lateral.png" alt="" class="w-full h-auto" />
+  </div>
+
+  <!-- Flor lateral derecha (la misma, espejada) -->
+  <div
+    id="cv-flor-der"
+    class="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none select-none z-[3]"
+    style="width: 15%; max-width: 75px;"
+  >
+    <img
+      src="/imagenes/lateral.png"
+      alt=""
+      class="w-full h-auto"
+      style="transform: scaleX(-1);"
+    />
+  </div>
+
+  <div
+    class="relative z-10 w-full max-w-[430px] text-center flex flex-col items-center"
+    style="padding-left: 4rem; padding-right: 4rem;"
+  >
+    <!-- Separador floral superior -->
+    <img
+      src="/imagenes/separador.png"
+      alt=""
+      id="cv-separador"
+      class="w-full h-auto pointer-events-none select-none"
+      style="max-width: 200px;"
+    />
+
+    <!-- Título -->
+    <h3 class="cv-item cv-titulo">{TITULO}</h3>
+
+    <!-- Tipo de vestimenta -->
+    <p class="cv-item cv-tipo">{TIPO}</p>
+
+    <!-- Siluetas -->
+    <div class="cv-item cv-siluetas">
+      <!-- Mujeres -->
+      <div class="cv-columna">
+        <img
+          src="/imagenes/mujer.png"
+          alt="Silueta de mujer con vestido largo"
+          class="cv-silueta"
+        />
+        <p class="cv-label">Mujeres</p>
+      </div>
+
+      <!-- Hombres -->
+      <div class="cv-columna">
+        <img
+          src="/imagenes/hombre.png"
+          alt="Silueta de hombre con traje"
+          class="cv-silueta"
+        />
+        <p class="cv-label">Hombres</p>
+      </div>
+    </div>
+
+    <!-- Colores reservados -->
+    <div class="cv-item cv-colores">
+      <p class="cv-colores-titulo">COLORES RESERVADOS</p>
+
+      <div class="cv-muestras">
+        <div class="cv-muestra">
+          <span class="cv-circulo cv-circulo-lila"></span>
+          <span class="cv-circulo-label">Lila</span>
+        </div>
+
+        <div class="cv-muestra">
+          <span class="cv-circulo cv-circulo-dorado"></span>
+          <span class="cv-circulo-label">Dorado</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Título de sección: mismo tamaño y estilo que en los demás componentes */
+  .cv-titulo {
+    font-family: "Crimson Text", serif;
+    font-weight: 400;
+    color: #7b4fa8;
+    font-size: clamp(1.4rem, 6.2vw, 1.8rem);
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    line-height: 1.1;
+    margin: 0;
+    margin-top: 1.5rem;
+  }
+
+  /* FORMAL */
+  .cv-tipo {
+    font-family: "Crimson Text", serif;
+    color: #8a63b0;
+    font-size: clamp(1.15rem, 5vw, 1.35rem);
+    letter-spacing: 0.14em;
+    text-indent: 0.14em;
+    line-height: 1.2;
+    margin: 0;
+    margin-top: 1.4rem;
+  }
+
+  /* Siluetas */
+  .cv-siluetas {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(1.5rem, 8vw, 3rem);
+    margin-top: 1.8rem;
+  }
+
+  .cv-columna {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cv-silueta {
+    height: clamp(120px, 34vw, 170px);
+    width: auto;
+    object-fit: contain;
+    user-select: none;
+  }
+
+  .cv-label {
+    font-family: "Crimson Text", serif;
+    color: #7b4fa8;
+    font-size: clamp(1.25rem, 5.4vw, 1.5rem);
+    line-height: 1.2;
+    margin: 0;
+    margin-top: 0.9rem;
+  }
+
+  /* ── Colores reservados ──────────────────────────── */
+  .cv-colores {
+    margin-top: 2.2rem;
+  }
+
+  .cv-colores-titulo {
+    font-family: "Crimson Text", serif;
+    color: #8a63b0;
+    font-size: clamp(1rem, 4.2vw, 1.15rem);
+    letter-spacing: 0.16em;
+    text-indent: 0.16em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .cv-muestras {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1.6rem, 8vw, 2.6rem);
+    margin-top: 1rem;
+  }
+
+  .cv-muestra {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .cv-circulo {
+    display: block;
+    width: clamp(38px, 11vw, 48px);
+    height: clamp(38px, 11vw, 48px);
+    border-radius: 9999px;
+    /* Anillo blanco + borde del propio color, para que se vea como una muestra */
+    box-shadow:
+      0 0 0 3px #ffffff,
+      0 0 0 4px currentColor,
+      0 6px 12px rgba(110, 75, 150, 0.22);
+  }
+
+  .cv-circulo-lila {
+    color: rgba(123, 79, 168, 0.55);
+    background: linear-gradient(140deg, #c9b3e2 0%, #9b78c4 45%, #7b4fa8 100%);
+  }
+
+  .cv-circulo-dorado {
+    color: rgba(196, 148, 92, 0.6);
+    background: linear-gradient(140deg, #f0dcb6 0%, #d9b06a 45%, #b8873b 100%);
+  }
+
+  .cv-circulo-label {
+    font-family: "Crimson Text", serif;
+    color: #7b4fa8;
+    font-size: clamp(1rem, 4.2vw, 1.15rem);
+    line-height: 1.2;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initVestimenta = () => {
+    const items = gsap.utils.toArray(".cv-item");
+    if (!items.length) return;
+
+    gsap.set(items, { opacity: 0, y: 30 });
+    gsap.set("#cv-separador", { opacity: 0, y: -25, scale: 0.94 });
+    gsap.set("#cv-flor-izq", { opacity: 0, x: -40 });
+    gsap.set("#cv-flor-der", { opacity: 0, x: 40 });
+
+    ScrollTrigger.create({
+      trigger: "#cv-wrapper",
+      start: "top 80%",
+      once: true,
+      onEnter: () => {
+        gsap.to("#cv-separador", {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2,
+          ease: "power2.out",
+        });
+        gsap.to(["#cv-flor-izq", "#cv-flor-der"], {
+          opacity: 1,
+          x: 0,
+          duration: 1.4,
+          ease: "power2.out",
+        });
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: "power2.out",
+        });
+      },
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initVestimenta);
+  document.addEventListener("astro:page-load", initVestimenta);
+</script>

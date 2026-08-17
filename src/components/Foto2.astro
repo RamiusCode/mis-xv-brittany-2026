@@ -1,0 +1,112 @@
+---
+// src/components/Foto2.astro - Trío de fotos intercaladas (las imágenes rotan entre sí)
+const fotos = [
+  "/imagenes/Imagen2.webp",
+  "/imagenes/Imagen3.webp",
+  "/imagenes/Imagen4.webp",
+];
+
+// Las tres columnas van a la misma altura
+const offsets = ["0rem", "0rem", "0rem"];
+---
+
+<section
+  class="relative w-full flex justify-center overflow-x-clip"
+  id="foto2-wrapper"
+  style="padding-top: 4rem; padding-bottom: 2.5rem;"
+>
+  <div class="w-full max-w-[500px] flex items-start justify-center">
+    {
+      offsets.map((offset, i) => (
+        <div
+          class="foto2-item relative flex-1 min-w-0 aspect-[2/3] overflow-hidden"
+          style={`margin-top: ${offset};`}
+          data-slot={i}
+        >
+          {fotos.map((src, j) => (
+            <img
+              src={src}
+              alt=""
+              class="foto2-img absolute inset-0 w-full h-full object-cover select-none"
+              data-index={j}
+              style={`opacity: ${j === i ? 1 : 0};`}
+            />
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const INTERVALO = 2600; // ms que dura cada foto en su lugar
+  const FUNDIDO = 0.9; // segundos de cruce entre fotos
+
+  const initFoto2 = () => {
+    const slots = gsap.utils.toArray<HTMLElement>(".foto2-item");
+    if (!slots.length) return;
+
+    gsap.set(slots, { opacity: 0, y: 40 });
+
+    let paso = 0;
+    let timer: number | undefined;
+
+    const rotar = () => {
+      paso++;
+      slots.forEach((slot, i) => {
+        const imgs = gsap.utils.toArray<HTMLElement>(".foto2-img", slot);
+        const activa = (i + paso) % imgs.length;
+        imgs.forEach((img, j) => {
+          gsap.to(img, {
+            opacity: j === activa ? 1 : 0,
+            duration: FUNDIDO,
+            ease: "power1.inOut",
+          });
+        });
+      });
+    };
+
+    ScrollTrigger.create({
+      trigger: "#foto2-wrapper",
+      start: "top 82%",
+      onEnter: () => {
+        gsap.to(slots, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          stagger: 0.18,
+          ease: "power2.out",
+        });
+        if (!timer) timer = window.setInterval(rotar, INTERVALO);
+      },
+      // Pausa el cambio de fotos cuando la sección no está a la vista
+      onLeave: () => {
+        if (timer) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+      },
+      onEnterBack: () => {
+        if (!timer) timer = window.setInterval(rotar, INTERVALO);
+      },
+      // Al salir hacia arriba se restaura el estado inicial para que la
+      // animación de entrada se repita en el siguiente scroll.
+      onLeaveBack: () => {
+        if (timer) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+        gsap.killTweensOf(slots);
+        gsap.set(slots, { opacity: 0, y: 40 });
+      },
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initFoto2);
+  document.addEventListener("astro:page-load", initFoto2);
+</script>

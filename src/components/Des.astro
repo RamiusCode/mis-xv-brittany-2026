@@ -1,0 +1,117 @@
+---
+// src/components/Des.astro - Cierre de la invitación (XV años, lila)
+---
+
+<section
+  class="relative w-full flex flex-col items-center overflow-hidden"
+  id="des-wrapper"
+  style="padding-top: 1.5rem;"
+>
+  <!-- Contenido -->
+  <div
+    class="relative z-10 w-full max-w-[430px] text-center flex flex-col items-center"
+    style="padding-left: 2rem; padding-right: 2rem;"
+  >
+    <!-- Texto -->
+    <p class="des-item des-texto">
+      Con mucha ilusión quiero vivir este momento rodeados de personas
+      importantes para mí. Será un honor contar con tu presencia
+    </p>
+
+    <!-- Cierre -->
+    <p class="des-item des-cierre">¡TE<br />ESPERAMOS!</p>
+  </div>
+
+  <!-- Flores inferiores (contenedor animado por GSAP) -->
+  <div id="des-flor-bottom" class="des-flor">
+    <!-- La imagen mantiene el volteo vertical fijo (el ramo apunta abajo) -->
+    <img
+      src="/imagenes/flor.png"
+      alt=""
+      class="w-full h-auto"
+      style="transform: scaleY(-1);"
+    />
+  </div>
+</section>
+
+<style>
+  /* Texto principal */
+  .des-texto {
+    font-family: "Crimson Text", serif;
+    color: #7f5aa8;
+    font-size: clamp(1.25rem, 5.4vw, 1.5rem);
+    line-height: 1.45;
+    margin: 0;
+    max-width: 340px;
+  }
+
+  /* ¡TE ESPERAMOS! */
+  .des-cierre {
+    font-family: "Crimson Text", serif;
+    color: #7b4fa8;
+    font-size: clamp(1.5rem, 6.6vw, 1.9rem);
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    line-height: 1.5;
+    margin: 0;
+    margin-top: 2.2rem;
+  }
+
+  /* Ramo inferior izquierdo */
+  .des-flor {
+    width: 62%;
+    max-width: 300px;
+    margin-right: auto;
+    margin-left: 0;
+    margin-top: -1.5rem;
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initDes = () => {
+    const items = gsap.utils.toArray(".des-item");
+    if (!items.length) return;
+
+    // Estado inicial. Se vuelve a aplicar al salir hacia arriba para que
+    // la animación de entrada se repita en cada scroll.
+    const reset = () => {
+      gsap.killTweensOf([...items, "#des-flor-bottom"]);
+      gsap.set(items, { opacity: 0, y: 30 });
+      gsap.set("#des-flor-bottom", { opacity: 0, x: -30, y: 20 });
+    };
+
+    reset();
+
+    ScrollTrigger.create({
+      trigger: "#des-wrapper",
+      start: "top 80%",
+      onLeaveBack: reset,
+      onEnter: () => {
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: "power2.out",
+        });
+        gsap.to("#des-flor-bottom", {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          duration: 1.6,
+          ease: "power2.out",
+        });
+      },
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initDes);
+  document.addEventListener("astro:page-load", initDes);
+</script>
